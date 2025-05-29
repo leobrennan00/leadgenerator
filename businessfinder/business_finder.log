@@ -1,0 +1,15 @@
+2025-05-25 06:15:10,282 - DEBUG - Starting new HTTPS connection (1): maps.googleapis.com:443
+2025-05-25 06:15:10,393 - DEBUG - https://maps.googleapis.com:443 "GET /maps/api/place/textsearch/json?query=electrician+in+54.394523500000005%2C-8.52813&radius=100000&key=YOUR_GOOGLE_API_KEY HTTP/1.1" 200 139
+2025-05-25 06:15:10,409 - DEBUG - API Response: {'error_message': 'The provided API key is invalid.', 'html_attributions': [], 'results': [], 'status': 'REQUEST_DENIED'}
+2025-05-25 06:15:10,409 - DEBUG - Number of businesses returned this page: 0
+2025-05-25 06:15:10,409 - DEBUG - Total businesses found so far: 0
+2025-05-25 06:18:05,162 - DEBUG - Starting new HTTPS connection (1): maps.googleapis.com:443
+2025-05-25 06:18:05,576 - DEBUG - https://maps.googleapis.com:443 "GET /maps/api/place/textsearch/json?query=electrician+in+51.885509%2C-8.40522&radius=100000&key=AIzaSyCmTJMnIl4E3v5Y2u5Q1JqfhVj6aqKmPJ8 HTTP/1.1" 200 1613
+2025-05-25 06:18:05,578 - DEBUG - API Response: {'html_attributions': [], 'results': [{'business_status': 'OPERATIONAL', 'formatted_address': 'Derryhallow, Drumshanbo, Co. Leitrim, N41 XE10, Ireland', 'geometry': {'location': {'lat': 54.0295121, 'lng': -8.0192375}, 'viewport': {'northeast': {'lat': 54.03080682989272, 'lng': -8.018171870107277}, 'southwest': {'lat': 54.02810717010728, 'lng': -8.020871529892721}}}, 'icon': 'https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/generic_business-71.png', 'icon_background_color': '#7B9EB0', 'icon_mask_base_uri': 'https://maps.gstatic.com/mapfiles/place_api/icons/v2/generic_pinlet', 'name': 'Ronan Tiernan Electrical Contractor', 'opening_hours': {'open_now': True}, 'place_id': 'ChIJw21hWsGJXkgRhvIzcwL1BUQ', 'plus_code': {'compound_code': '2XHJ+R8 Drumshanbo, County Leitrim', 'global_code': '9C6H2XHJ+R8'}, 'rating': 5, 'reference': 'ChIJw21hWsGJXkgRhvIzcwL1BUQ', 'types': ['electrician', 'point_of_interest', 'establishment'], 'user_ratings_total': 2}], 'status': 'OK'}
+2025-05-25 06:18:05,578 - DEBUG - Number of businesses returned this page: 1
+2025-05-25 06:18:05,578 - DEBUG - Total businesses found so far: 1
+2025-05-25 06:18:05,582 - DEBUG - Starting new HTTPS connection (1): maps.googleapis.com:443
+2025-05-25 06:18:05,731 - DEBUG - https://maps.googleapis.com:443 "GET /maps/api/place/details/json?place_id=ChIJw21hWsGJXkgRhvIzcwL1BUQ&fields=website%2Cformatted_phone_number%2Cformatted_address&key=AIzaSyCmTJMnIl4E3v5Y2u5Q1JqfhVj6aqKmPJ8 HTTP/1.1" 200 264
+2025-05-25 06:18:05,733 - DEBUG - Starting new HTTPS connection (1): leitrimelectrician.ie:443
+2025-05-25 06:18:05,843 - DEBUG - https://leitrimelectrician.ie:443 "GET / HTTP/1.1" 200 3731
+2025-05-25 06:18:05,869 - DEBUG - Distance to Ronan Tiernan Electrical Contractor: 240.0 km

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+{% load tailwind_tags %}
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+
+    <title>Lead Generator</title>
+    {% tailwind_css %}
+      <style>
+        .container {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        body {
+        font-family: 'Montserrat', sans-serif;
+        }
+
+        .radio {
+            margin-right: 5px;
+        }
+
+        .left-panel {
+            flex: 2;
+            padding-right: 20px;
+            padding-left: 20px;
+        }
+
+        .right-panel {
+            flex: 1;
+            border-left: 1px solid #ccc;
+            padding-left: 20px;
+            background-color: #f9f9f9;
+        }
+
+        .csv-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .csv-list li {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1 style="font-weight: bold; font-size: 100px; text-align: center;">
+    <span style="color: black;">Lead</span> <span class="text-blue-500">Generator</span>
+</h1>
+
+<div class="container">
+    <div class="left-panel">
+
+
+        <form method="POST" style="margin-bottom: 20px">
+            {% csrf_token %}
+
+            <!-- Latitude and Longitude Inputs -->
+            <label for="latitude">Latitude:</label>
+            <input type="text" style="background-color: aliceblue; border-radius: 5px" id="latitude" name="latitude" required><br><br>
+
+            <label for="longitude">Longitude:</label>
+            <input type="text" style="background-color: aliceblue; border-radius: 5px" id="longitude" name="longitude" required><br><br>
+
+            <!-- Use current location -->
+            <button type="button"
+                    onclick="getCurrentLocation()"
+                    class="mt-4 px-6 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition-colors duration-300">
+                Use my location
+            </button><br><br>
+
+            <!-- Radio buttons for towns in Ireland -->
+            <h3 class="text-lg font-semibold mb-2 mt-4">Select a Town</h3>
+            <div class="grid grid-cols-2 gap-2">
+                <label class="flex items-center space-x-2">
+                    <input class="radio" type="radio" name="town" onclick="setCoordinates(53.349805, -6.26031)">
+                    <span>Dublin</span>
+                </label>
+                <label class="flex items-center space-x-2">
+                    <input class="radio" type="radio" name="town" onclick="setCoordinates(51.8985, -8.4756)">
+                    <span>Cork</span>
+                </label>
+                <label class="flex items-center space-x-2">
+                    <input class="radio" type="radio" name="town" onclick="setCoordinates(53.2707, -9.0568)">
+                    <span>Galway</span>
+                </label>
+                <label class="flex items-center space-x-2">
+                    <input class="radio" type="radio" name="town" onclick="setCoordinates(52.6638, -8.6265)">
+                    <span>Limerick</span>
+                </label>
+                <label class="flex items-center space-x-2">
+                    <input class="radio" type="radio" name="town" onclick="setCoordinates(54.5973, -5.9301)">
+                    <span>Belfast</span>
+                </label>
+                <label class="flex items-center space-x-2">
+                    <input class="radio" type="radio" name="town" onclick="setCoordinates(54.2760, -8.4755)">
+                    <span>Sligo</span>
+                </label>
+                <label class="flex items-center space-x-2">
+                    <input class="radio" type="radio" name="town" onclick="setCoordinates(54.9971, -7.3187)">
+                    <span>Derry</span>
+                </label>
+                <label class="flex items-center space-x-2">
+                    <input class="radio" type="radio" name="town" onclick="setCoordinates(54.9507, -7.7315)">
+                    <span>Letterkenny</span>
+                </label>
+                <label class="flex items-center space-x-2">
+                    <input class="radio" type="radio" name="town" onclick="setCoordinates(53.8507, -9.3033)">
+                    <span>Castlebar</span>
+                </label>
+                <label class="flex items-center space-x-2">
+                    <input class="radio" type="radio" name="town" onclick="setCoordinates(52.8479, -8.9820)">
+                    <span>Ennis</span>
+                </label>
+                <label class="flex items-center space-x-2">
+                    <input class="radio" type="radio" name="town" onclick="setCoordinates(53.5275, -7.3550)">
+                    <span>Mullingar</span>
+                </label>
+                <label class="flex items-center space-x-2">
+                    <input class="radio" type="radio" name="town" onclick="setCoordinates(52.8584, -8.1915)">
+                    <span>Nenagh</span>
+                </label>
+                <label class="flex items-center space-x-2">
+                    <input class="radio" type="radio" name="town" onclick="setCoordinates(52.6542, -7.2491)">
+                    <span>Kilkenny</span>
+                </label>
+                <label class="flex items-center space-x-2">
+                    <input class="radio" type="radio" name="town" onclick="setCoordinates(52.2588, -7.1101)">
+                    <span>Waterford</span>
+                </label>
+                <label class="flex items-center space-x-2">
+                    <input class="radio" type="radio" name="town" onclick="setCoordinates(52.0590, -9.5075)">
+                    <span>Killarney</span>
+                </label>
+                <label class="flex items-center space-x-2">
+                    <input class="radio" type="radio" name="town" onclick="setCoordinates(52.2710, -9.6935)">
+                    <span>Tralee</span>
+                </label>
+                <label class="flex items-center space-x-2">
+                    <input class="radio" type="radio" name="town" onclick="setCoordinates(53.4200, -7.9401)">
+                    <span>Athlone</span>
+                </label>
+            </div>
+
+            <!-- Add more towns here if needed -->
+
+            <br><br>
+
+            <!-- Search radius -->
+            <label for="radius">Radius (meters):</label>
+            <input type="number" value="50000" id="radius" name="radius" required><br><br>
+
+            <!-- Business Type Input -->
+            <label for="business">Business Type:</label>
+            <input type="text" id="business" name="business" required><br><br>
+
+            <!-- Submit Button -->
+            <button
+                type="submit"
+                class="mt-4 px-6 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition-colors duration-300">
+                Search
+            </button>
+
+        </form>
+
+
+    {% if trades_info %}
+    <h2>Results: ({{ total_results }} businesses found)</h2>
+
+    <ul>
+        {% for trade in trades_info %}
+        <li style="margin-bottom: 20px">
+            <strong>Name:</strong> {{ trade.name }}<br>
+            <strong>Website:</strong> {{ trade.website }}<br>
+            <strong>Phone Number:</strong> {{ trade.phone_number }}<br>
+            <strong>Address:</strong> {{ trade.address }}<br>
+            <strong>Email:</strong> {{ trade.email }}<br>
+            <strong>Distance:</strong> {{ trade.distance }} km
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    </div>
+
+
+
+    <div class="right-panel">
+        <h3>Email Lists</h3>
+            <ul class="csv-list">
+                {% for file in csv_files %}
+                    <li>{{ file.name }}: {{ file.count }} emails</li>
+                {% endfor %}
+            </ul>
+    </div>
+
+</div>
+</body>
+
+<script>
+    // Function to get current location of the device
+    function getCurrentLocation() {
+        if(navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                // Get lat and long from position
+                const latitude = position.coords.latitude;
+                const longitude = position.coords.longitude;
+
+                document.getElementById("latitude").value = latitude;
+                document.getElementById("longitude").value = longitude;
+
+                alert("Location set to " + latitude + ", " + longitude);
+            }, function(error) {
+                alert("Error occurred: " + error.code);
+            });
+        }
+        else {
+            alert("Geolocation not available for this device");
+        }
+    }
+
+    // Function to set the coordinates based on the selected town
+    function setCoordinates(lat, lon) {
+        document.getElementById("latitude").value = lat;
+        document.getElementById("longitude").value = lon;
+    }
+</script>
+</html>
