@@ -1,0 +1,58 @@
+
+<!DOCTYPE html>
+{% load tailwind_tags %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Send Bulk Email</title>
+    {% tailwind_css %}
+</head>
+<body class="bg-gray-50 font-sans leading-normal tracking-normal">
+
+    <div class="max-w-3xl mx-auto py-12">
+        <h1 class="text-3xl font-bold text-center text-blue-600 mb-6">Send Bulk Email</h1>
+
+        {% if messages %}
+        <ul class="mb-4">
+            {% for message in messages %}
+            <li class="text-sm {% if message.tags %}text-{{ message.tags }}-600{% endif %}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        <form method="POST" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+            {% csrf_token %}
+
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="subject">Subject</label>
+                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" id="subject" name="subject" type="text" required>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="message">Message</label>
+                <textarea class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" id="message" name="message" rows="6" required></textarea>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="business_type">Select Business Type</label>
+                <select id="business_type" name="business_type" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required>
+                    {% for business in business_types %}
+                    <option value="{{ business.id }}">{{ business.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="flex justify-end">
+                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" type="submit">
+                    Send Emails
+                </button>
+            </div>
+        </form>
+
+        <div class="text-center mt-4">
+            <a href="{% url 'index' %}" class="text-blue-500 hover:underline">← Back to Home</a>
+        </div>
+    </div>
+
+</body>
+</html>

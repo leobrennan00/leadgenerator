@@ -1,10 +1,20 @@
-from django.shortcuts import render
+import time
+from collections import defaultdict
+
+from django.conf import settings
+from django.contrib import messages
+from django.core.mail import send_mail
+from django.db.models import Count
+from django.shortcuts import render, redirect
 import requests
 from geopy.distance import geodesic
 import re
 from bs4 import BeautifulSoup
 import csv
 import os
+from rapidfuzz import process, fuzz
+
+from search.models import EmailAddress, BusinessType
 
 # Your Google API key
 API_KEY = 'AIzaSyCmTJMnIl4E3v5Y2u5Q1JqfhVj6aqKmPJ8'
@@ -107,48 +117,37 @@ def list_csv_files_with_counts():
 
 # Function to search for trades near a location
 def search_trades_nearby(location, radius, business, api_key):
+    from .models import EmailAddress, BusinessType
+
     params = {
-        'location': f'{location[0]},{location[1]}',  # lat, long
-        'radius': radius,  # in meters
-        'keyword': business,  # search for business
+        'location': f'{location[0]},{location[1]}',
+        'radius': radius,
+        'keyword': business,
         'key': api_key
     }
 
-    #resets place count every search
     total_results = 0
-
-
     trades_info = []
     emails_found = set()
+
+    # Create or get the related business type object
+    normalized_name = normalize_business_type(business)
+    business_type_obj, _ = BusinessType.objects.get_or_create(name=normalized_name)
 
     while True:
         response = requests.get(endpoint_url, params=params)
         data = response.json()
-
-        # Log the response data for debugging
-        #print(f"API Response: {data}")  # Logs the raw response for inspection
-
         results = data.get('results', [])
-
-        num_results = len(results)
-        total_results += num_results
+        total_results += len(results)
 
         for place in results:
-            website = place.get('website', 'Not available')
             place_id = place.get('place_id')
-
             website, phone_number, address, email = get_place_details(place_id, api_key)
 
             place_location = (place['geometry']['location']['lat'], place['geometry']['location']['lng'])
-            distance = geodesic(location, place_location).km
+            distance = round(geodesic(location, place_location).km, 2)
 
-            # Round the distance to 2 decimal places
-            distance = round(distance, 2)
-
-            # Log the calculated distance for debugging
-            print(f"Distance to {place['name']}: {distance} km")
-
-            if distance <= (radius / 1000):  # Only include businesses within the radius
+            if distance <= (radius / 1000):
                 trades_info.append({
                     'name': place.get('name', 'No name provided'),
                     'website': website,
@@ -161,18 +160,44 @@ def search_trades_nearby(location, radius, business, api_key):
             if email != 'Not available':
                 emails_found.add(email)
 
-        # Pagination: Check if there is a next page of results
-        next_page_token = data.get('next_page_token')
-        if next_page_token:
-            params['pagetoken'] = next_page_token
+                # Store email and related business type in the database
+                EmailAddress.objects.get_or_create(
+                    email=email,
+                    defaults={'business_type': business_type_obj}
+                )
+
+        if 'next_page_token' in data:
+            params['pagetoken'] = data['next_page_token']
+            time.sleep(2)  # small delay for next_page_token to activate
         else:
             break
 
-    # Write found emails to CSV after fetching all data
     csv_filename = f"{business.lower().replace(' ', '_')}_emails.csv"
     write_emails_to_csv(emails_found, csv_filename)
 
     return trades_info, total_results
+
+
+
+def normalize_business_type(user_input, score_threshold=50):
+    user_input = user_input.strip().lower()
+
+    # Fetch existing business types
+    existing_types = list(BusinessType.objects.values_list('name', flat=True))
+    existing_types_lower = [t.lower() for t in existing_types]
+
+    # Use token_set_ratio for more flexible matching
+    best_match = process.extractOne(user_input, existing_types_lower, scorer=fuzz.partial_ratio, score_cutoff=score_threshold)
+
+    if best_match:
+        # Return the original-cased name from DB, not lowercase
+        print(best_match[0])
+        index = existing_types_lower.index(best_match[0])
+        return existing_types[index]
+    else:
+        # No good match found — use original input (capitalized)
+        return user_input.capitalize()
+
 
 
 # View for handling search input and displaying results
@@ -180,6 +205,14 @@ def index(request):
     trades_info = []
     total_results = 0
     csv_files = list_csv_files_with_counts()
+
+    # Create a dict: { "Plumber": [email1, email2, ...] }
+    email_lists = defaultdict(list)
+    for entry in EmailAddress.objects.select_related("business_type"):
+        if entry.business_type:
+            email_lists[entry.business_type.name].append(entry.email)
+
+    email_counts = EmailAddress.objects.values('business_type__name').annotate(count=Count('id'))
 
     if request.method == "POST":
         latitude = float(request.POST['latitude'])
@@ -194,4 +227,31 @@ def index(request):
 
         'trades_info': trades_info,
         'total_results': total_results,
-        'csv_files': csv_files})
+        'email_counts': email_counts,
+        'email_lists': dict(email_lists)
+    })
+
+def send_email_view(request):
+    # Get list of business types to display in a dropdown
+    business_types = BusinessType.objects.all()
+
+    if request.method == 'POST':
+        subject = request.POST.get('subject')
+        message = request.POST.get('message')
+        selected_business_type_id = request.POST.get('business_type')
+
+        # Fetch emails associated with selected business type
+        email_queryset = EmailAddress.objects.filter(business_type_id=selected_business_type_id).values_list('email', flat=True)
+
+        for recipient in email_queryset:
+            if recipient:
+                try:
+                    send_mail(subject, message, settings.EMAIL_HOST_USER, [recipient])
+                    time.sleep(1)  # optional: to avoid hitting email limits
+                except Exception as e:
+                    messages.error(request, f'Failed to send email to {recipient}: {e}')
+
+        messages.success(request, 'Emails sent successfully.')
+        return redirect('send_email')
+
+    return render(request, 'search/send_email.html', {'business_types': business_types})

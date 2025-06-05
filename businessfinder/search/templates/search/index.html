@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
 
     <title>Lead Generator</title>
+
     {% tailwind_css %}
       <style>
         .container {
@@ -50,101 +51,139 @@
 <body>
 
 <h1 style="font-weight: bold; font-size: 100px; text-align: center;">
-    <span style="color: black;">Lead</span> <span class="text-blue-500">Generator</span>
+    <span style="color: black;">Lead</span> <span class="text-blue-500 hover:text-blue-300 transition-colors duration-300 cursor-default">Generator</span>
 </h1>
 
-<div class="container">
-    <div class="left-panel">
+
+<div class="flex w-full min-h-screen">
+    <div class="flex-1 p-6">
 
 
         <form method="POST" style="margin-bottom: 20px">
             {% csrf_token %}
 
             <!-- Latitude and Longitude Inputs -->
-            <label for="latitude">Latitude:</label>
-            <input type="text" style="background-color: aliceblue; border-radius: 5px" id="latitude" name="latitude" required><br><br>
+           <div class="flex gap-6 mb-4">
+  <!-- Latitude -->
+              <div class="flex-1">
+                <label for="latitude" class="block text-gray-700 font-medium mb-1">Latitude:</label>
+                <input
+                  type="text"
+                  id="latitude"
+                  name="latitude"
+                  required
+                  class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+              </div>
 
-            <label for="longitude">Longitude:</label>
-            <input type="text" style="background-color: aliceblue; border-radius: 5px" id="longitude" name="longitude" required><br><br>
+              <!-- Longitude -->
+              <div class="flex-1">
+                <label for="longitude" class="block text-gray-700 font-medium mb-1">Longitude:</label>
+                <input
+                  type="text"
+                  id="longitude"
+                  name="longitude"
+                  required
+                  class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+              </div>
+           </div>
 
             <!-- Use current location -->
-            <button type="button"
-                    onclick="getCurrentLocation()"
-                    class="mt-4 px-6 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition-colors duration-300">
-                Use my location
-            </button><br><br>
+        <!-- Use current location -->
+        <button type="button"
+                onclick="getCurrentLocation()"
+                class="mt-2 px-6 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition-colors duration-300 cursor-pointer flex items-center gap-2">
+
+          <!-- Icon inside button -->
+          <svg xmlns="http://www.w3.org/2000/svg"
+               fill="none"
+               viewBox="0 0 24 24"
+               stroke-width="1.5"
+               stroke="currentColor"
+               class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+          </svg>
+
+          Use my location
+        </button>
+            <br>
 
             <!-- Radio buttons for towns in Ireland -->
-            <h3 class="text-lg font-semibold mb-2 mt-4">Select a Town</h3>
-            <div class="grid grid-cols-2 gap-2">
-                <label class="flex items-center space-x-2">
-                    <input class="radio" type="radio" name="town" onclick="setCoordinates(53.349805, -6.26031)">
-                    <span>Dublin</span>
-                </label>
-                <label class="flex items-center space-x-2">
-                    <input class="radio" type="radio" name="town" onclick="setCoordinates(51.8985, -8.4756)">
-                    <span>Cork</span>
-                </label>
-                <label class="flex items-center space-x-2">
-                    <input class="radio" type="radio" name="town" onclick="setCoordinates(53.2707, -9.0568)">
-                    <span>Galway</span>
-                </label>
-                <label class="flex items-center space-x-2">
-                    <input class="radio" type="radio" name="town" onclick="setCoordinates(52.6638, -8.6265)">
-                    <span>Limerick</span>
-                </label>
-                <label class="flex items-center space-x-2">
-                    <input class="radio" type="radio" name="town" onclick="setCoordinates(54.5973, -5.9301)">
-                    <span>Belfast</span>
-                </label>
-                <label class="flex items-center space-x-2">
-                    <input class="radio" type="radio" name="town" onclick="setCoordinates(54.2760, -8.4755)">
-                    <span>Sligo</span>
-                </label>
-                <label class="flex items-center space-x-2">
-                    <input class="radio" type="radio" name="town" onclick="setCoordinates(54.9971, -7.3187)">
-                    <span>Derry</span>
-                </label>
-                <label class="flex items-center space-x-2">
-                    <input class="radio" type="radio" name="town" onclick="setCoordinates(54.9507, -7.7315)">
-                    <span>Letterkenny</span>
-                </label>
-                <label class="flex items-center space-x-2">
-                    <input class="radio" type="radio" name="town" onclick="setCoordinates(53.8507, -9.3033)">
-                    <span>Castlebar</span>
-                </label>
-                <label class="flex items-center space-x-2">
-                    <input class="radio" type="radio" name="town" onclick="setCoordinates(52.8479, -8.9820)">
-                    <span>Ennis</span>
-                </label>
-                <label class="flex items-center space-x-2">
-                    <input class="radio" type="radio" name="town" onclick="setCoordinates(53.5275, -7.3550)">
-                    <span>Mullingar</span>
-                </label>
-                <label class="flex items-center space-x-2">
-                    <input class="radio" type="radio" name="town" onclick="setCoordinates(52.8584, -8.1915)">
-                    <span>Nenagh</span>
-                </label>
-                <label class="flex items-center space-x-2">
-                    <input class="radio" type="radio" name="town" onclick="setCoordinates(52.6542, -7.2491)">
-                    <span>Kilkenny</span>
-                </label>
-                <label class="flex items-center space-x-2">
-                    <input class="radio" type="radio" name="town" onclick="setCoordinates(52.2588, -7.1101)">
-                    <span>Waterford</span>
-                </label>
-                <label class="flex items-center space-x-2">
-                    <input class="radio" type="radio" name="town" onclick="setCoordinates(52.0590, -9.5075)">
-                    <span>Killarney</span>
-                </label>
-                <label class="flex items-center space-x-2">
-                    <input class="radio" type="radio" name="town" onclick="setCoordinates(52.2710, -9.6935)">
-                    <span>Tralee</span>
-                </label>
-                <label class="flex items-center space-x-2">
-                    <input class="radio" type="radio" name="town" onclick="setCoordinates(53.4200, -7.9401)">
-                    <span>Athlone</span>
-                </label>
+            <h3 class="block text-gray-700 font-medium mb-1">Select a Town</h3>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+              <label class="flex items-center p-2 bg-white border border-gray-200 rounded-md shadow-sm hover:shadow-md hover:border-blue-400 transition-all cursor-pointer">
+                <input type="radio" name="town" onclick="setCoordinates(53.349805, -6.26031)" class="accent-blue-500 mr-3" />
+                <span class="text-gray-700 font-medium">Dublin</span>
+              </label>
+              <label class="flex items-center p-2 bg-white border border-gray-200 rounded-md shadow-sm hover:shadow-md hover:border-blue-400 transition-all cursor-pointer">
+                <input type="radio" name="town" onclick="setCoordinates(51.8985, -8.4756)" class="accent-blue-500 mr-3" />
+                <span class="text-gray-700 font-medium">Cork</span>
+              </label>
+              <label class="flex items-center p-2 bg-white border border-gray-200 rounded-md shadow-sm hover:shadow-md hover:border-blue-400 transition-all cursor-pointer">
+                <input type="radio" name="town" onclick="setCoordinates(53.2707, -9.0568)" class="accent-blue-500 mr-3" />
+                <span class="text-gray-700 font-medium">Galway</span>
+              </label>
+              <label class="flex items-center p-2 bg-white border border-gray-200 rounded-md shadow-sm hover:shadow-md hover:border-blue-400 transition-all cursor-pointer">
+                <input type="radio" name="town" onclick="setCoordinates(52.6638, -8.6265)" class="accent-blue-500 mr-3" />
+                <span class="text-gray-700 font-medium">Limerick</span>
+              </label>
+              <label class="flex items-center p-2 bg-white border border-gray-200 rounded-md shadow-sm hover:shadow-md hover:border-blue-400 transition-all cursor-pointer">
+                <input type="radio" name="town" onclick="setCoordinates(54.5973, -5.9301)" class="accent-blue-500 mr-3" />
+                <span class="text-gray-700 font-medium">Belfast</span>
+              </label>
+              <label class="flex items-center p-2 bg-white border border-gray-200 rounded-md shadow-sm hover:shadow-md hover:border-blue-400 transition-all cursor-pointer">
+                <input type="radio" name="town" onclick="setCoordinates(54.2760, -8.4755)" class="accent-blue-500 mr-3" />
+                <span class="text-gray-700 font-medium">Sligo</span>
+              </label>
+              <label class="flex items-center p-2 bg-white border border-gray-200 rounded-md shadow-sm hover:shadow-md hover:border-blue-400 transition-all cursor-pointer">
+                <input type="radio" name="town" onclick="setCoordinates(54.9971, -7.3187)" class="accent-blue-500 mr-3" />
+                <span class="text-gray-700 font-medium">Derry</span>
+              </label>
+              <label class="flex items-center p-2 bg-white border border-gray-200 rounded-md shadow-sm hover:shadow-md hover:border-blue-400 transition-all cursor-pointer">
+                <input type="radio" name="town" onclick="setCoordinates(54.9507, -7.7315)" class="accent-blue-500 mr-3" />
+                <span class="text-gray-700 font-medium">Letterkenny</span>
+              </label>
+              <label class="flex items-center p-2 bg-white border border-gray-200 rounded-md shadow-sm hover:shadow-md hover:border-blue-400 transition-all cursor-pointer">
+                <input type="radio" name="town" onclick="setCoordinates(53.8507, -9.3033)" class="accent-blue-500 mr-3" />
+                <span class="text-gray-700 font-medium">Castlebar</span>
+              </label>
+              <label class="flex items-center p-2 bg-white border border-gray-200 rounded-md shadow-sm hover:shadow-md hover:border-blue-400 transition-all cursor-pointer">
+                <input type="radio" name="town" onclick="setCoordinates(52.8479, -8.9820)" class="accent-blue-500 mr-3" />
+                <span class="text-gray-700 font-medium">Ennis</span>
+              </label>
+              <label class="flex items-center p-2 bg-white border border-gray-200 rounded-md shadow-sm hover:shadow-md hover:border-blue-400 transition-all cursor-pointer">
+                <input type="radio" name="town" onclick="setCoordinates(53.5275, -7.3550)" class="accent-blue-500 mr-3" />
+                <span class="text-gray-700 font-medium">Mullingar</span>
+              </label>
+              <label class="flex items-center p-2 bg-white border border-gray-200 rounded-md shadow-sm hover:shadow-md hover:border-blue-400 transition-all cursor-pointer">
+                <input type="radio" name="town" onclick="setCoordinates(52.8584, -8.1915)" class="accent-blue-500 mr-3" />
+                <span class="text-gray-700 font-medium">Nenagh</span>
+              </label>
+              <label class="flex items-center p-2 bg-white border border-gray-200 rounded-md shadow-sm hover:shadow-md hover:border-blue-400 transition-all cursor-pointer">
+                <input type="radio" name="town" onclick="setCoordinates(52.6542, -7.2491)" class="accent-blue-500 mr-3" />
+                <span class="text-gray-700 font-medium">Kilkenny</span>
+              </label>
+              <label class="flex items-center p-2 bg-white border border-gray-200 rounded-md shadow-sm hover:shadow-md hover:border-blue-400 transition-all cursor-pointer">
+                <input type="radio" name="town" onclick="setCoordinates(52.2588, -7.1101)" class="accent-blue-500 mr-3" />
+                <span class="text-gray-700 font-medium">Waterford</span>
+              </label>
+              <label class="flex items-center p-2 bg-white border border-gray-200 rounded-md shadow-sm hover:shadow-md hover:border-blue-400 transition-all cursor-pointer">
+                <input type="radio" name="town" onclick="setCoordinates(52.0590, -9.5075)" class="accent-blue-500 mr-3" />
+                <span class="text-gray-700 font-medium">Killarney</span>
+              </label>
+              <label class="flex items-center p-2 bg-white border border-gray-200 rounded-md shadow-sm hover:shadow-md hover:border-blue-400 transition-all cursor-pointer">
+                <input type="radio" name="town" onclick="setCoordinates(52.2710, -9.6935)" class="accent-blue-500 mr-3" />
+                <span class="text-gray-700 font-medium">Tralee</span>
+              </label>
+              <label class="flex items-center p-2 bg-white border border-gray-200 rounded-md shadow-sm hover:shadow-md hover:border-blue-400 transition-all cursor-pointer">
+                <input type="radio" name="town" onclick="setCoordinates(53.4200, -7.9401)" class="accent-blue-500 mr-3" />
+                <span class="text-gray-700 font-medium">Athlone</span>
+              </label>
             </div>
 
             <!-- Add more towns here if needed -->
@@ -152,51 +191,106 @@
             <br><br>
 
             <!-- Search radius -->
-            <label for="radius">Radius (meters):</label>
-            <input type="number" value="50000" id="radius" name="radius" required><br><br>
-
-            <!-- Business Type Input -->
-            <label for="business">Business Type:</label>
-            <input type="text" id="business" name="business" required><br><br>
+            <div class="mb-4">
+              <label for="radius" class="block text-gray-700 font-medium mb-1">Radius (meters):</label>
+              <input
+                type="number"
+                id="radius"
+                name="radius"
+                value="50000"
+                required
+                class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+            </div>
+            <div class="mb-4">
+              <label for="radius" class="block text-gray-700 font-medium mb-1">Business Type</label>
+              <input
+                type="text"
+                id="business"
+                name="business"
+                required
+                class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+            </div>
 
             <!-- Submit Button -->
             <button
                 type="submit"
-                class="mt-4 px-6 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition-colors duration-300">
+                class="mt-4 px-6 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition-colors duration-300 cursor-pointer">
                 Search
             </button>
 
         </form>
 
 
-    {% if trades_info %}
-    <h2>Results: ({{ total_results }} businesses found)</h2>
+      {% if trades_info %}
+      <div id="results">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">
+          Results: ({{ total_results }} businesses found)
+        </h2>
 
-    <ul>
-        {% for trade in trades_info %}
-        <li style="margin-bottom: 20px">
-            <strong>Name:</strong> {{ trade.name }}<br>
-            <strong>Website:</strong> {{ trade.website }}<br>
-            <strong>Phone Number:</strong> {{ trade.phone_number }}<br>
-            <strong>Address:</strong> {{ trade.address }}<br>
-            <strong>Email:</strong> {{ trade.email }}<br>
-            <strong>Distance:</strong> {{ trade.distance }} km
-        </li>
-        {% endfor %}
-    </ul>
+        <ul class="space-y-4">
+          {% for trade in trades_info %}
+            <li class="bg-white shadow rounded-lg p-4 border border-gray-200">
+              <p><strong>Name:</strong> {{ trade.name }}</p>
+              <p><strong>Website:</strong> {{ trade.website }}</p>
+              <p><strong>Phone Number:</strong> {{ trade.phone_number }}</p>
+              <p><strong>Address:</strong> {{ trade.address }}</p>
+              <p><strong>Email:</strong> {{ trade.email }}</p>
+              <p><strong>Distance:</strong> {{ trade.distance }} km</p>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
     {% endif %}
     </div>
 
+    <div class="150 bg-gray-50 border-l border-gray-200 p-6">
+    <div class="flex items-center mb-4">
+      <h3 class="text-xl pr-10 font-semibold text-gray-800">Emails</h3>
+    <a href="{% url 'send_email' %}"
+       class="ml-auto px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow hover:bg-blue-600 transition duration-300 flex items-center gap-2">
 
+      <!-- Envelope Icon -->
+      <svg xmlns="http://www.w3.org/2000/svg"
+           fill="none"
+           viewBox="0 0 24 24"
+           stroke-width="1.5"
+           stroke="currentColor"
+           class="w-5 h-5">
+        <path stroke-linecap="round" stroke-linejoin="round"
+              d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25H4.5a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5H4.5a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.5a2.25 2.25 0 01-2.36 0l-7.5-4.5a2.25 2.25 0 01-1.07-1.916V6.75" />
+      </svg>
 
-    <div class="right-panel">
-        <h3>Email Lists</h3>
-            <ul class="csv-list">
-                {% for file in csv_files %}
-                    <li>{{ file.name }}: {{ file.count }} emails</li>
-                {% endfor %}
-            </ul>
+      Send Bulk Email
+    </a>
     </div>
+
+
+    <ul class="space-y-3">
+      {% for business, emails in email_lists.items %}
+        <li class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm w-full max-w-sm">
+          <button
+            type="button"
+            class="w-full text-left font-medium text-gray-800 hover:text-blue-600 flex justify-between items-center"
+            onclick="toggleEmails('{{ business|slugify }}')">
+            <span>{{ business|title }} ({{ emails|length }})</span>
+            <svg class="w-4 h-4 transform transition-transform duration-300" id="{{ business|slugify }}-icon"
+                 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <ul class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out ml-4 text-sm text-gray-600" id="{{ business|slugify }}-emails">
+            {% for email in emails %}
+              <li>{{ email }}</li>
+            {% endfor %}
+          </ul>
+        </li>
+      {% endfor %}
+    </ul>
+
+    </div>
+
 
 </div>
 </body>
@@ -223,6 +317,32 @@
         }
     }
 
+
+      function toggleEmails(id) {
+        const list = document.getElementById(id + "-emails");
+        const icon = document.getElementById(id + "-icon");
+
+        if (list.classList.contains("max-h-0")) {
+          list.classList.remove("max-h-0");
+          list.classList.add("max-h-[500px]");  // Adjust height as needed
+          icon.classList.add("rotate-180");
+        } else {
+          list.classList.remove("max-h-[500px]");
+          list.classList.add("max-h-0");
+          icon.classList.remove("rotate-180");
+        }
+      }
+
+
+
+    // Scroll to results if they exist
+    window.onload = function () {
+    const results = document.getElementById("results");
+    if (results) {
+      results.scrollIntoView({ behavior: "smooth" });
+    }
+    };
+
     // Function to set the coordinates based on the selected town
     function setCoordinates(lat, lon) {
         document.getElementById("latitude").value = lat;
@@ -230,3 +350,4 @@
     }
 </script>
 </html>
+

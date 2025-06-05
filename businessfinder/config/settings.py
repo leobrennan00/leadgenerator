@@ -22,6 +22,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-u85#@=v--39u3_qb!q^5j*1@ti9o1$hcx#g1j#2c+=mp03ctjw'
 
+OPENAI_API_KEY = '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'
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -59,7 +61,7 @@ MIDDLEWARE = [
     'django.middleware.locale.LocaleMiddleware',
 ]
 
-ROOT_URLCONF = 'businessfinder.urls'
+ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
     {
@@ -77,7 +79,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'businessfinder.wsgi.application'
+WSGI_APPLICATION = 'config.wsgi.application'
 
 
 # Database
@@ -85,11 +87,14 @@ WSGI_APPLICATION = 'businessfinder.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'businessfinder',       # the name of the database you created
+        'USER': 'Leo',     # the PostgreSQL user role you created
+        'PASSWORD': 'Oddsocks1!', # the password you chose for that role
+        'HOST': 'localhost',         # because the database is local
+        'PORT': '5432',              # default PostgreSQL port
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
