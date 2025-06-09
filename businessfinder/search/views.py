@@ -16,21 +16,23 @@ from rapidfuzz import process, fuzz
 
 from search.models import EmailAddress, BusinessType
 
-# Your Google API key
+#Google API key
 API_KEY = 'AIzaSyCmTJMnIl4E3v5Y2u5Q1JqfhVj6aqKmPJ8'
 
-# Define the endpoint for Google Places API
+#endpoint for Google Places API
 endpoint_url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
 place_details_url = "https://maps.googleapis.com/maps/api/place/details/json"
 
+#where emails csv files are stored
 EMAIL_FOLDER = os.path.join(os.path.dirname(__file__), '..', 'emails')
 
-# Function to get email from website (basic extraction)
+#Function to get email from website using web scraping
 def extract_email_from_website(website_url):
     try:
         response = requests.get(website_url, timeout=5)
         if response.status_code == 200:
             soup = BeautifulSoup(response.text, 'html.parser')
+
             # Look for mailto: links (simple email extraction)
             mailto_links = soup.find_all('a', href=re.compile('mailto:'))
             emails = [link['href'].replace('mailto:', '') for link in mailto_links if 'href' in link.attrs]
@@ -41,15 +43,15 @@ def extract_email_from_website(website_url):
         return 'Not available'
 
 
-# Function to get place details (including the website, phone number, and address)
+#Function to get place details (including the website, phone number, and address)
 def get_place_details(place_id, api_key):
     params = {
         'place_id': place_id,
-        'fields': 'website,formatted_phone_number,formatted_address',  # Request website, phone number, and address
+        'fields': 'website,formatted_phone_number,formatted_address',  #Request website, phone number, and address
         'key': api_key
     }
 
-    # Send the request to Google Place Details API
+    #Send the request to Google Place Details API
     response = requests.get(place_details_url, params=params)
     result = response.json().get('result', {})
 
@@ -63,19 +65,19 @@ def get_place_details(place_id, api_key):
 
     return website, phone_number, address, email
 
-# Function to read emails from the existing CSV file and return them as a set
+#Function to read emails from the existing CSV file and return them as a set
 def read_emails_from_csv():
     emails = set()
     try:
         with open('mechanic_emails.csv', mode='r', encoding='utf-8') as file:
             reader = csv.reader(file)
             for row in reader:
-                emails.add(row[0])  # Assuming email is the first column
+                emails.add(row[0])  #Assuming email is the first column
     except FileNotFoundError:
-        pass  # If the file doesn't exist, return an empty set
+        pass  #If the file doesn't exist, return an empty set
     return emails
 
-
+#function that also stores emails in a CSV
 def write_emails_to_csv(emails, filename):
 
     folder_path = os.path.join(os.path.dirname(__file__), '..', 'emails')
@@ -157,6 +159,7 @@ def search_trades_nearby(location, radius, business, api_key):
                     'distance': distance
                 })
 
+
             if email != 'Not available':
                 emails_found.add(email)
 
@@ -178,15 +181,15 @@ def search_trades_nearby(location, radius, business, api_key):
     return trades_info, total_results
 
 
-
+#example: allows both 'Carpenter' and 'Carpentry' search to have the same business type ID in database
 def normalize_business_type(user_input, score_threshold=50):
     user_input = user_input.strip().lower()
 
-    # Fetch existing business types
+    #Fetch existing business types
     existing_types = list(BusinessType.objects.values_list('name', flat=True))
     existing_types_lower = [t.lower() for t in existing_types]
 
-    # Use token_set_ratio for more flexible matching
+    #Use token_set_ratio for more flexible matching
     best_match = process.extractOne(user_input, existing_types_lower, scorer=fuzz.partial_ratio, score_cutoff=score_threshold)
 
     if best_match:
@@ -200,13 +203,13 @@ def normalize_business_type(user_input, score_threshold=50):
 
 
 
-# View for handling search input and displaying results
+#View for handling search input and displaying results
 def index(request):
     trades_info = []
     total_results = 0
     csv_files = list_csv_files_with_counts()
 
-    # Create a dict: { "Plumber": [email1, email2, ...] }
+    #creates a dictionary
     email_lists = defaultdict(list)
     for entry in EmailAddress.objects.select_related("business_type"):
         if entry.business_type:
@@ -240,14 +243,14 @@ def send_email_view(request):
         message = request.POST.get('message')
         selected_business_type_id = request.POST.get('business_type')
 
-        # Fetch emails associated with selected business type
+        #Gets emails associated with selected business type
         email_queryset = EmailAddress.objects.filter(business_type_id=selected_business_type_id).values_list('email', flat=True)
 
         for recipient in email_queryset:
             if recipient:
                 try:
                     send_mail(subject, message, settings.EMAIL_HOST_USER, [recipient])
-                    time.sleep(1)  # optional: to avoid hitting email limits
+                    time.sleep(1)  #to avoid hitting email limits
                 except Exception as e:
                     messages.error(request, f'Failed to send email to {recipient}: {e}')
 
